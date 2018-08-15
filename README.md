@@ -1,6 +1,6 @@
 # 91A-Turning-Point
 ## Welcome to team 91A's VEX repo!
->This will be updated throughout the VEX: Turning Point Season (2018-2019):calendar:\
+>This will be updated throughout the VEX: Turning Point Season (2018-2019):round_pushpin:
 
 **Featuring:**
 ```
