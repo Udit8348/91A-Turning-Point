@@ -15,3 +15,4 @@ Experimental Code Snippets
 >Also check out our secondary-programmer @poke1646
 
 ## Good Luck this season! :octocat::octocat:
+> _Author: Udit Subramanya_ 
