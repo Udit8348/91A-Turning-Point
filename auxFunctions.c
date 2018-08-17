@@ -1,3 +1,7 @@
+/*
+    This file is largely untested, and requires a port to PROS3, mostly for brainstorming
+*/
+
 #ifndef _AUX_FUNCTIONS
 #define _AUX_FUNCTIONS
 
