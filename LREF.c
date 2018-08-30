@@ -10,7 +10,8 @@ typedef struct{
 
 }LRE_filter;
 
-static LRE_filter fwVel;
+//Placeholder instance of the LRE_filter object
+static LRE_filter FooBar;
 
 /**
 
