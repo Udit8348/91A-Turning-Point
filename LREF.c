@@ -5,7 +5,7 @@ typedef struct{
 	//Circular array with previous filtered values
 	float prevValues[3];
 
-	//avg of last 3  potentiometer values
+	//avg of last 3 filtered values
 	float avg;
 
 }LRE_filter;
