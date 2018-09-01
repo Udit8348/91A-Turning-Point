@@ -5,29 +5,43 @@ typedef struct{
 	//Circular array with previous filtered values
 	float prevValues[3];
 
-	//avg of last 3 filtered values
+	//sum of all the values in the array
+	float total
+		
+	//Avg of last 3 filtered values
 	float avg;
+	
+	//Oldest index in the array
+	int index;
 
 }LRE_filter;
 
 //Placeholder instance of the LRE_filter object
 static LRE_filter FooBar;
 
+//set the number of previous values stored by the filter
+#define SAMPLES 3
+
 /**
 
-* initialize filter structure, fill prevValues array with starting sensor values
+* initialize filter structure, fill prevValues array with starting sensor value, calculate avg value
 * @param instance of filter structure
 * @param raw (unfiltered) input value
 */
 
 void lrefInit(LRE_filter filter, float val)
 {
+	//Set starting sensor value
 	filter.rawValue = val;
-	filter.prevValues[0] = filter.rawValue;
-	filter.prevValues[1] = filter.rawValue;
-	filter.prevValues[2] = filter.rawValue;
-
-	filter.avg = (filter.prevValues[0] + filter.prevValues[1] + filter.prevValues[2])/3;
+	filter.total = 0;
+	filter.index = 0;
+	
+	for(int i = 0; i < SAMPLES - 1; i++){
+		filter.prevValues[i] = filter.rawValue;
+		filter.total+= filter.prevValues[i];	//@@might need to preform sum once the entire array is populated
+	}
+	
+	filter.avg = filter.total/3;
 }
 
 /**
@@ -42,11 +56,28 @@ void lrefInit(LRE_filter filter, float val)
 float lrefUpdate(LRE_filter filter, float weight, float val)
 {
 	filter.rawValue = val;
-	filter.prevValues[0] = filter.prevValues[1];	//2nd -> 3rd
-	filter.prevValues[1] = filter.prevValues[2];	//1st -> 2nd
 
-	float lreFilter = weight * filter.rawValue + (1 - weight) * filter.avg;
-	filter.prevValues[2] = lreFilter;							//new -> 1st
+	//Calculate new filtered value
+	float newVal = weight * filter.rawValue + (1 - weight) * filter.avg;
+	
+	//Update sum by adding new value and subtracting oldest value
+	filter.total = filter.total + newVal - filter.prevValues[filter.index]
+		
+	//Replace oldest array value with newest value
+	filter.prevValues[filter.index] = newVal;
+		
+	//Increment the index of the oldest value
+	if(filter.index < SAMPLES -1){
+		filter.index++;
+	}else{
+		filter.index = 0;
+	}	
+	
+		//add circular logic
+		
+	//Update avg
+	filter.avg = filter.total/SAMPLES;
 
+	//Return filtered value
 	return lreFilter;
 }
