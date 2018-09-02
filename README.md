@@ -6,6 +6,7 @@
 ```
 Past Source Code
 Experimental Code Snippets
+Team Branding and Graphics
 ```
 ### Get to know our Team:
 [Instagram](https://www.instagram.com/91archangel/)\
