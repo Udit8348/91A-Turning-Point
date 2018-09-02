@@ -1,14 +1,18 @@
+//set the number of previous values stored by the filter
+#define MAX_SAMPLES 3
+
+//Data structure for the linear recursive exponential (LRE) filter 
 typedef struct{
-	//Stores the current, unfiltered sensor value
+	//Stores the current, unfiltered input value
 	float rawValue;
 
-	//Circular array with previous filtered values
-	float prevValues[3];
+	//Circular array with previous filtered values, size based on max number of prev samples considered
+	float prevValues[MAX_SAMPLES];
 
 	//sum of all the values in the array
 	float total
 		
-	//Avg of last 3 filtered values
+	//Avg of values in the array
 	float avg;
 	
 	//Oldest index in the array
@@ -19,14 +23,12 @@ typedef struct{
 //Placeholder instance of the LRE_filter object
 static LRE_filter FooBar;
 
-//set the number of previous values stored by the filter
-#define SAMPLES 3
-
 /**
 
-* initialize filter structure, fill prevValues array with starting sensor value, calculate avg value
-* @param instance of filter structure
-* @param raw (unfiltered) input value
+* initialize filter structure, fill prevValues array with starting input value, calculate avg value
+*
+* @param instance of filter structure	-->(filter)
+* @param raw (unfiltered) input value	-->(val)
 */
 
 void lrefInit(LRE_filter filter, float val)
@@ -36,21 +38,23 @@ void lrefInit(LRE_filter filter, float val)
 	filter.total = 0;
 	filter.index = 0;
 	
+	//Populate array, and get initial sum of the values in the array
 	for(int i = 0; i < SAMPLES - 1; i++){
 		filter.prevValues[i] = filter.rawValue;
 		filter.total+= filter.prevValues[i];	//@@might need to preform sum once the entire array is populated
 	}
 	
-	filter.avg = filter.total/3;
+	//Calculate the average value of the array
+	filter.avg = filter.total/MAX_SAMPLES;
 }
 
 /**
 
 * update filter structure, uses simple linear recursive exponential filter, also limits mem usage
 *
-* @param instance of filter structure
-* @param weighting of the filter
-* @param raw (unfiltered) input value
+* @param instance of filter structure	-->(filter)
+* @param weighting of the filter		-->(weight)
+* @param raw (unfiltered) input value	-->(val)
 */
 
 float lrefUpdate(LRE_filter filter, float weight, float val)
@@ -61,23 +65,21 @@ float lrefUpdate(LRE_filter filter, float weight, float val)
 	float newVal = weight * filter.rawValue + (1 - weight) * filter.avg;
 	
 	//Update sum by adding new value and subtracting oldest value
-	filter.total = filter.total + newVal - filter.prevValues[filter.index]
+	filter.total = filter.total + newVal - filter.prevValues[filter.index];
 		
 	//Replace oldest array value with newest value
 	filter.prevValues[filter.index] = newVal;
 		
-	//Increment the index of the oldest value
-	if(filter.index < SAMPLES -1){
-		filter.index++;
+	//Increment the index of the oldest value, return to start of the array at the end of the array
+	if(filter.index < MAX_SAMPLES){
+		filter.index++;	
 	}else{
 		filter.index = 0;
 	}	
-	
-		//add circular logic
 		
 	//Update avg
-	filter.avg = filter.total/SAMPLES;
+	filter.avg = filter.total/MAX_SAMPLES;
 
 	//Return filtered value
-	return lreFilter;
+	return newVal;
 }
