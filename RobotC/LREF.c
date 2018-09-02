@@ -10,7 +10,7 @@ typedef struct{
 	float prevValues[MAX_SAMPLES];
 
 	//sum of all the values in the array
-	float total
+	float total;
 		
 	//Avg of values in the array
 	float avg;
@@ -39,7 +39,7 @@ void lrefInit(LRE_filter filter, float val)
 	filter.index = 0;
 	
 	//Populate array, and get initial sum of the values in the array
-	for(int i = 0; i < SAMPLES - 1; i++){
+	for(int i = 0; i < MAX_SAMPLES; i++){
 		filter.prevValues[i] = filter.rawValue;
 		filter.total+= filter.prevValues[i];	//@@might need to preform sum once the entire array is populated
 	}
