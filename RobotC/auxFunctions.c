@@ -9,7 +9,7 @@
 #DEFINE BATTERY_LOW = 13.2
 
 
-//Return a more accurate estimation of the battery voltage
+//float: Return a more accurate estimation of the battery voltage
 float smartBatteryPercentage()
 {
     float percentage  = ((nImmediateBatteryLevel / 1000.0) - BATTERY_LOW) / (BATTERY_HIGH - BATTERY_LOW) * 100.0;
@@ -29,6 +29,19 @@ float smartBatteryPercentage()
     the battery would be considered dead, so 0% @6.9V accurately represents that.
     */
     return percentage;
+}
+
+//int: takes raw input and returns slewed mtr values
+int slewRate()
+{
+    if(abs(abs(motorPower) - abs(lastPower)) > slewRate){
+        motorPower = lastPower + sgn(motorPower) * slewRate;
+        /*
+            If the new value is higher than the accepted change in speed, then it gets limited by the max rate of change. The
+            rate of change is determined by the wait time of the loop.
+        */
+    }    
+   lastPower = motorPower;
 }
 
 #endif
