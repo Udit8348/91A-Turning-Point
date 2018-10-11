@@ -42,6 +42,7 @@ int slewRate()
         */
     }    
    lastPower = motorPower;
+   return motor power;  
 }
 
 #endif
