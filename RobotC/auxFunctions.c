@@ -44,5 +44,65 @@ int slewRate()
    lastPower = motorPower;
    return motor power;  
 }
+///
+int commanded_arm_position; //global parameter for task
 
+//this task uses arm motor and potentiometer on shaft
+//to create a "servo" where global "commanded_arm_position"
+//variable is the parameter to this task.  Motors will drive the
+//arm/shaft so that the arm_potentiometer value equals the
+//commanded_arm_control variable. Probably best to implement this
+//using P or PI control
+
+task arm_control()
+{
+ while(1) //infinite loop to drive arm to position & maintain it
+ {
+   if (commanded_arm_control > Sensor(arm_potentiometer) motor[arm]=127; //drive arm up
+  else if (commanded_arm_control < Sensor(arm_potentiometer) motor[arm]=-127; //drive arm down
+  else motor[arm]=0;  //Stop
+  }
+}
+
+//this is the competition mode user_control task where the driver controls the
+//drive train but just press certain predefined buttons on the controller to 
+//autonomously move the arm to the desired positions
+
+task user_control()
+{
+ int arm_position=400;               //This value a function on how you mount the potentiometer
+
+ commanded_arm_position=400;  // 400 is potentiometer value when arm is down
+                                            //900 is the upper limit of arm position
+ startTask (arm_control);
+
+ while(1)
+ {
+
+  ... code to set appropriate joystick values to drive motors
+  ... code to controls claws
+
+  //code to control arm position manually
+  //if up or down button pressed, increment/decrement arm_position variable
+
+  if (arm_up_button_pressed ) arm_position++; //Need to limit between 400 & 900
+  if (arm_dn_button_pressed ) arm_position--;
+
+  //code to make arm move to preset arm positions
+  //Depending on which button pressed (Cortex Joystick controller)
+  //Jam arm_position with appropriate Potentiometer values
+
+  if (arm_preset_ground) arm_position=400; ground level ready to pickup
+  if (arm_preset_low_goal_de) arm_position=500; just at low goal for de-scoring
+  if (arm_preset_low_goal_sc) arm_position=600; just above low goal for scoring
+  if (arm_preset_high_goa_del) arm_position=800; just at high goal for de-scoring
+  if (arm_preset_high_goal_sc) arm_position=900;just above high goal for scoring
+
+  //Send value to task arm_control() to move arm
+  //independent of drive or claw functions
+
+  commanded_arm_position = arm_position;
+ }
+}
+///
 #endif
